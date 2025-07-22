@@ -1,10 +1,10 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import HomePage from './pages/HomePage';
+
+import LandingPage from './pages/LandingPage';
 import Signup from './pages/Signup';
 import Login from './pages/Login'; 
-import Feed from './pages/Feed';
-import Home from './pages/Home'; 
+import Feed from './pages/Feed'; 
 import SeedCommunities from './SeedCommunities';
 import Navbar from './components/Navbar'; 
 import CommunityPage from './pages/CommunityPage';
@@ -17,7 +17,7 @@ function App() {
       <Navbar />
 
       <Routes>
-        <Route path="/" element={<HomePage />} />
+         <Route path="/" element={<LandingPage />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/login" element={<Login />} />
         <Route path="/feed" element={<Feed />} />
