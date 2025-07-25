@@ -1,10 +1,8 @@
-// Import Firebase core and services
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
 import { getAuth } from "firebase/auth";
-import { getFirestore } from "firebase/firestore"; // ✅ Add this
+import { getFirestore, serverTimestamp } from "firebase/firestore"; // 👈 ADD serverTimestamp here
 
-// Your Firebase config
 const firebaseConfig = {
   apiKey: "AIzaSyCiR6dDE2V8gWsNkhB79wJfl30LGBjx8CU",
   authDomain: "juconnect-38a89.firebaseapp.com",
@@ -19,8 +17,7 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const analytics = getAnalytics(app);
 
-// ✅ Initialize and export services
 const auth = getAuth(app);
-const db = getFirestore(app); // ✅ Add this line
+const db = getFirestore(app);
 
-export { auth, db }; // ✅ Export both
+export { auth, db, serverTimestamp }; // ✅ Add serverTimestamp here

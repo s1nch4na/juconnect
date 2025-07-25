@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 
 import LandingPage from './pages/LandingPage';
 import Signup from './pages/Signup';
@@ -8,22 +8,33 @@ import Feed from './pages/Feed';
 import SeedCommunities from './SeedCommunities';
 import Navbar from './components/Navbar'; 
 import CommunityPage from './pages/CommunityPage';
+import SeedPosts from './pages/SeedPosts';
+import PostDetail from './pages/PostDetail';
 
+function AppWrapper() {
+  const location = useLocation();
 
-function App() {
   return (
-    <Router>
-      {/* */}
-      <Navbar />
-
+    <>
+      {location.pathname !== "/" && <Navbar />}
       <Routes>
-         <Route path="/" element={<LandingPage />} />
+        <Route path="/" element={<LandingPage />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/login" element={<Login />} />
         <Route path="/feed" element={<Feed />} />
         <Route path="/seed" element={<SeedCommunities />} />
         <Route path="/c/:communityId" element={<CommunityPage />} />
+        <Route path="/seed-posts" element={<SeedPosts />} />
+        <Route path="/post/:postId" element={<PostDetail />} />
       </Routes>
+    </>
+  );
+}
+
+function App() {
+  return (
+    <Router>
+      <AppWrapper />
     </Router>
   );
 }
