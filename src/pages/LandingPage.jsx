@@ -129,7 +129,7 @@ const LandingPage = () => {
         <h1 style={{ fontSize: '2rem', marginBottom: '1rem' }}>{decodedText}</h1>
 
         <p style={{ fontSize: '0.8rem', marginBottom: '2rem', color: '#aaa' }}>
-          Your Reddit-style campus platform
+          Where your campus conversations come alive.
         </p>
 
         <div style={{ display: 'flex', gap: '20px' }}>

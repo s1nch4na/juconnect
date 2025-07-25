@@ -1,18 +1,28 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom'; // 👈 Import navigate
+import { useNavigate } from 'react-router-dom';
 import { auth } from '../firebase';
 import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
 
 const Login = () => {
-  const navigate = useNavigate(); // 👈 Init navigation
+  const navigate = useNavigate();
 
   const handleGoogleSignIn = async () => {
     const provider = new GoogleAuthProvider();
     try {
       const result = await signInWithPopup(auth, provider);
       const user = result.user;
+
+      const email = user.email;
+      const allowedDomain = "@jainuniversity.ac.in"; // or "@jugglabs.in" if confirmed
+
+      if (!email.endsWith(allowedDomain)) {
+        alert("Access restricted to Jain University students only.");
+        await auth.signOut();
+        return;
+      }
+
       console.log('Logged in user:', user);
-      navigate('/feed'); // 👈 Redirect after login
+      navigate('/feed');
     } catch (error) {
       console.error('Google sign-in error:', error);
     }
@@ -24,7 +34,7 @@ const Login = () => {
         <div className="flex justify-end">
           <button
             className="text-white hover:text-gray-400 text-xl"
-            onClick={() => navigate('/')} // 👈 Go back to landing
+            onClick={() => navigate('/')}
           >
             ×
           </button>
@@ -57,7 +67,7 @@ const Login = () => {
 
         <button
           className="w-full bg-green-500 text-white rounded-md py-2 font-medium hover:bg-green-600 transition"
-          onClick={() => navigate('/feed')} // 👈 Manual login logic should go here
+          onClick={() => navigate('/feed')}
         >
           Log in
         </button>

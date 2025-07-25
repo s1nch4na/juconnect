@@ -4,16 +4,21 @@ import { getAuth } from "firebase/auth";
 import { getFirestore, serverTimestamp } from "firebase/firestore"; // 👈 ADD serverTimestamp here
 
 const firebaseConfig = {
-  apiKey: "AIzaSyCiR6dDE2V8gWsNkhB79wJfl30LGBjx8CU",
-  authDomain: "juconnect-38a89.firebaseapp.com",
-  projectId: "juconnect-38a89",
-  storageBucket: "juconnect-38a89.firebasestorage.app",
-  messagingSenderId: "769773169466",
-  appId: "1:769773169466:web:0891a6cd90142d98f37e03",
-  measurementId: "G-S35XL47H1B"
+
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID,
+  measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID,
+
+
 };
 
 // Initialize Firebase
+console.log("Project ID:", import.meta.env.VITE_FIREBASE_PROJECT_ID);
+
 const app = initializeApp(firebaseConfig);
 const analytics = getAnalytics(app);
 
