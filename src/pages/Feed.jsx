@@ -1,12 +1,33 @@
 import { useEffect, useState } from "react";
-import { collection, getDocs } from "firebase/firestore";
-import { db } from "../firebase";
+import { collection, getDocs, doc, getDoc } from "firebase/firestore";
+import { auth, db } from "../firebase";
 import PostCard from "../components/PostCard";
 import CommunityList from "../components/CommunityList";
 
 const Feed = () => {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [username, setUsername] = useState("");
+
+  useEffect(() => {
+    const fetchUsername = async () => {
+      const user = auth.currentUser;
+      if (user) {
+        try {
+          const userDoc = await getDoc(doc(db, "users", user.uid));
+          if (userDoc.exists()) {
+            setUsername(userDoc.data().username);
+          } else {
+            console.warn("User document not found.");
+          }
+        } catch (err) {
+          console.error("Error fetching username:", err);
+        }
+      }
+    };
+
+    fetchUsername();
+  }, []);
 
   useEffect(() => {
     const fetchRandomPosts = async () => {
@@ -17,7 +38,6 @@ const Feed = () => {
           ...doc.data(),
         }));
 
-        
         const grouped = {};
         allPosts.forEach(post => {
           if (!grouped[post.communityId]) grouped[post.communityId] = [];
@@ -50,9 +70,15 @@ const Feed = () => {
         <CommunityList />
       </aside>
 
-     
       <main className="flex-1 max-w-2xl">
+        {username && (
+          <div className="flex justify-between items-center mb-4">
+            <h1 className="text-2xl font-semibold">Welcome, {username} 👋</h1>
+          </div>
+        )}
+
         <h1 className="text-3xl font-extrabold mb-4">Your Feed</h1>
+
         {loading ? (
           <p>Loading feed...</p>
         ) : posts.length === 0 ? (
@@ -62,7 +88,6 @@ const Feed = () => {
         )}
       </main>
 
-      
       <aside className="hidden lg:block w-[300px] shrink-0 sticky top-20 h-fit">
         <div className="bg-white p-4 rounded-md shadow text-sm text-gray-500">
           <p>👋 Tip: Join communities to personalize your feed!</p>
