@@ -1,6 +1,6 @@
-// src/SeedCommunities.js
 
-import { db } from "./firebase"; // adjust the path if needed
+
+import { db } from "./firebase"; 
 import { doc, setDoc } from "firebase/firestore";
 
 export default function SeedCommunities() {

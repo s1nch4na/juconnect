@@ -1,4 +1,4 @@
-// src/pages/CommunityPage.jsx
+
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { collection, query, where, getDocs, doc, getDoc } from "firebase/firestore";
@@ -44,12 +44,12 @@ const CommunityPage = () => {
 
 return (
   <div className="grid grid-cols-12 gap-4 max-w-screen-xl mx-auto px-4 py-6">
-    {/* Left Sidebar: Community List */}
+    
     <aside className="hidden lg:block col-span-2">
       <CommunityList />
     </aside>
 
-    {/* Center Content: Posts */}
+   
     <main className="col-span-12 lg:col-span-7">
       <h1 className="text-3xl font-extrabold mb-4">r/{communityId}</h1>
       {loading ? (
@@ -61,7 +61,7 @@ return (
       )}
     </main>
 
-    {/* Right Sidebar: Community Info */}
+    
     <aside className="hidden lg:block col-span-3">
       {communityInfo && (
         <CommunitySidebar

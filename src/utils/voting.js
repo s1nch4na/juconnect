@@ -1,4 +1,4 @@
-// src/utils/voting.js
+
 import { doc, getDoc, setDoc, deleteDoc, updateDoc, increment } from "firebase/firestore";
 import { db } from "../firebase";
 

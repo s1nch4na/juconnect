@@ -22,11 +22,11 @@ const Signup = () => {
     setError('');
 
     try {
-      // 1. Create Firebase Auth user
+      
       const userCredential = await createUserWithEmailAndPassword(auth, form.email, form.password);
       const user = userCredential.user;
 
-      // 2. Store extra info like username in Firestore
+      
       await setDoc(doc(db, "users", user.uid), {
         username: form.username,
         email: form.email,
@@ -34,7 +34,7 @@ const Signup = () => {
       });
 
       alert("Signup successful!");
-      navigate("/feed"); // Redirect to feed or login
+      navigate("/feed"); 
     } catch (err) {
       console.error(err);
       setError(err.message);

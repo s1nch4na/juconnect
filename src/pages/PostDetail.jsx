@@ -43,7 +43,7 @@ const PostDetail = () => {
     await postComment({
       postId,
       text,
-      userId: "anonymous", // Replace with actual user ID if using auth
+      userId: "anonymous", 
       parentId: replyTo,
     });
     setReplyTo(null);
@@ -62,7 +62,7 @@ const PostDetail = () => {
       </p>
       <p className="text-base text-gray-800 mt-3">{post.content}</p>
 
-      {/* Comments section */}
+      
       <div className="mt-6 border-t pt-4">
         <h2 className="text-lg font-semibold mb-2">Comments</h2>
         <CommentForm

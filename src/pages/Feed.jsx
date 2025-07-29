@@ -17,7 +17,7 @@ const Feed = () => {
           ...doc.data(),
         }));
 
-        // Group by communityId and take 1-2 random posts from each
+        
         const grouped = {};
         allPosts.forEach(post => {
           if (!grouped[post.communityId]) grouped[post.communityId] = [];
@@ -45,12 +45,12 @@ const Feed = () => {
 
   return (
     <div className="flex max-w-7xl mx-auto px-4 py-6 gap-6">
-      {/* Left Sidebar: Community List */}
+      
       <aside className="hidden lg:block w-[240px] sticky top-20 h-fit">
         <CommunityList />
       </aside>
 
-      {/* Center Feed */}
+     
       <main className="flex-1 max-w-2xl">
         <h1 className="text-3xl font-extrabold mb-4">Your Feed</h1>
         {loading ? (
@@ -62,7 +62,7 @@ const Feed = () => {
         )}
       </main>
 
-      {/* Right Sidebar: Reserved or Optional */}
+      
       <aside className="hidden lg:block w-[300px] shrink-0 sticky top-20 h-fit">
         <div className="bg-white p-4 rounded-md shadow text-sm text-gray-500">
           <p>👋 Tip: Join communities to personalize your feed!</p>

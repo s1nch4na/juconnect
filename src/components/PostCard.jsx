@@ -10,7 +10,7 @@ const PostCard = ({ post }) => {
 
   const onUpvote = async () => {
     await handleVote({ postId: post.id, userId, voteType: "upvote" });
-    // Refresh counts (optional: fetch from backend again or just guess)
+    
     setUpvotes((prev) => prev + 1);
     setDownvotes((prev) => (prev > 0 ? prev - 1 : 0));
   };
@@ -23,7 +23,7 @@ const PostCard = ({ post }) => {
 
   return (
     <div className="bg-white border rounded-md shadow p-4 mb-4 hover:shadow-lg transition duration-200">
-      {/* Top bar */}
+      
       <div className="text-sm text-gray-600 mb-2 flex gap-2 items-center">
         <Link to={`/c/${post.communityId}`} className="font-semibold text-blue-600 hover:underline">
           r/{post.communityId}
