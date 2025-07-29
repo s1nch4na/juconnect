@@ -21,20 +21,25 @@ const Signup = () => {
     e.preventDefault();
     setError('');
 
+    // Enforce jainuniversity.ac.in domain check (case-insensitive)
+    const email = form.email.toLowerCase();
+    if (!email.endsWith('@jainuniversity.ac.in')) {
+      setError('Only @jainuniversity.ac.in emails are allowed for signup.');
+      return;
+    }
+
     try {
-      
-      const userCredential = await createUserWithEmailAndPassword(auth, form.email, form.password);
+      const userCredential = await createUserWithEmailAndPassword(auth, email, form.password);
       const user = userCredential.user;
 
-      
-      await setDoc(doc(db, "users", user.uid), {
+      await setDoc(doc(db, 'users', user.uid), {
         username: form.username,
-        email: form.email,
-        createdAt: new Date()
+        email: email,
+        createdAt: new Date(),
       });
 
-      alert("Signup successful!");
-      navigate("/feed"); 
+      alert('Signup successful!');
+      navigate('/feed');
     } catch (err) {
       console.error(err);
       setError(err.message);
