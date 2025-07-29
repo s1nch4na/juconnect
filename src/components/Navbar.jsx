@@ -1,11 +1,37 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { getAuth, signOut } from "firebase/auth";
+import { getAuth, signOut, onAuthStateChanged } from "firebase/auth";
+import { doc, getDoc } from "firebase/firestore";
+import { db } from "../firebase";
 
 const Navbar = () => {
   const auth = getAuth();
-  const user = auth.currentUser;
   const navigate = useNavigate();
+  const [username, setUsername] = useState("");
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
+      setUser(currentUser);
+      if (currentUser) {
+        try {
+          const docRef = doc(db, "users", currentUser.uid);
+          const docSnap = await getDoc(docRef);
+          if (docSnap.exists()) {
+            setUsername(docSnap.data().username);
+          } else {
+            setUsername(currentUser.email); // fallback
+          }
+        } catch (err) {
+          console.error("Error fetching user document:", err);
+        }
+      } else {
+        setUsername(""); // logout fallback
+      }
+    });
+
+    return () => unsubscribe(); // cleanup
+  }, [auth]);
 
   const handleLogout = async () => {
     await signOut(auth);
@@ -32,7 +58,7 @@ const Navbar = () => {
         />
         {user ? (
           <>
-            <span className="text-sm text-gray-600">Hi, {user.email}</span>
+            <span className="text-sm text-gray-600">Hi, {username}</span>
             <button
               onClick={handleLogout}
               className="text-sm bg-red-100 text-red-600 px-2 py-1 rounded"

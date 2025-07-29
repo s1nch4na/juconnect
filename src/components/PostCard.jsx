@@ -10,7 +10,6 @@ const PostCard = ({ post }) => {
 
   const onUpvote = async () => {
     await handleVote({ postId: post.id, userId, voteType: "upvote" });
-    
     setUpvotes((prev) => prev + 1);
     setDownvotes((prev) => (prev > 0 ? prev - 1 : 0));
   };
@@ -19,6 +18,14 @@ const PostCard = ({ post }) => {
     await handleVote({ postId: post.id, userId, voteType: "downvote" });
     setDownvotes((prev) => prev + 1);
     setUpvotes((prev) => (prev > 0 ? prev - 1 : 0));
+  };
+
+  // ✅ Add share function here
+  const handleShare = () => {
+    const url = `${window.location.origin}/post/${post.id}`;
+    navigator.clipboard.writeText(url)
+      .then(() => alert("Post link copied to clipboard!"))
+      .catch((err) => console.error("Share failed", err));
   };
 
   return (
@@ -44,10 +51,10 @@ const PostCard = ({ post }) => {
             <FaArrowDown /> {downvotes}
           </button>
           <Link to={`/post/${post.id}`} className="hover:text-blue-600 flex items-center gap-1">
-            <FaCommentDots /> {post.commentsCount} comments
+            <FaCommentDots /> {post.commentsCount ?? 0} comments
           </Link>
         </div>
-        <button className="hover:text-blue-600 flex items-center gap-1">
+        <button onClick={handleShare} className="hover:text-blue-600 flex items-center gap-1">
           <FaShare /> Share
         </button>
       </div>

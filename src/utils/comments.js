@@ -1,21 +1,55 @@
-import { collection, addDoc, serverTimestamp, query, where, getDocs } from "firebase/firestore";
+import {
+  collection,
+  query,
+  getDocs,
+  addDoc,
+  serverTimestamp,
+  doc,
+  getDoc,
+  updateDoc,
+  increment,
+} from "firebase/firestore";
 import { db } from "../firebase";
 
+export const fetchComments = async (postId) => {
+  const q = query(collection(db, "posts", postId, "comments"));
+  const snap = await getDocs(q);
 
-export const postComment = async ({ postId, text, userId, parentId = null }) => {
-  const commentsRef = collection(db, "posts", postId, "comments");
-  await addDoc(commentsRef, {
-    text,
-    userId,
-    parentId, 
-    createdAt: serverTimestamp(),
-  });
+  const comments = await Promise.all(
+    snap.docs.map(async (docSnap) => {
+      const data = docSnap.data();
+      let username = "anonymous";
+
+      try {
+        const userSnap = await getDoc(doc(db, "users", data.createdBy));
+        if (userSnap.exists()) {
+          username = userSnap.data().username;
+        }
+      } catch (err) {
+        console.error("Failed to fetch user:", err);
+      }
+
+      return {
+        id: docSnap.id,
+        ...data,
+        username,
+      };
+    })
+  );
+
+  return comments;
 };
 
+export const postComment = async ({ postId, text, userId, parentId = null }) => {
+  await addDoc(collection(db, "posts", postId, "comments"), {
+    content: text,
+    createdBy: userId,
+    createdAt: serverTimestamp(),
+    parentId,
+  });
 
-export const fetchComments = async (postId) => {
-  const commentsRef = collection(db, "posts", postId, "comments");
-  const q = query(commentsRef);
-  const snapshot = await getDocs(q);
-  return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+  //  increment commentsCount in the parent post document
+  await updateDoc(doc(db, "posts", postId), {
+    commentsCount: increment(1),
+  });
 };
