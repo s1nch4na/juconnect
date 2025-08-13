@@ -16,6 +16,7 @@ const CommentForm = ({ onSubmit, placeholder }) => {
         type="text"
         placeholder={placeholder}
         className="flex-1 border px-3 py-2 text-sm rounded"
+        
         value={text}
         onChange={(e) => setText(e.target.value)}
       />

@@ -1,6 +1,4 @@
-
-
-import { db } from "./firebase"; 
+import { db, serverTimestamp } from "./firebase";
 import { doc, setDoc } from "firebase/firestore";
 
 export default function SeedCommunities() {
@@ -45,12 +43,16 @@ export default function SeedCommunities() {
     ];
 
     for (const comm of communities) {
-      await setDoc(doc(db, "communities", comm.id), {
-        ...comm,
-        createdBy: "system",
-        createdAt: new Date(),
-        isOfficial: true,
-      });
+      await setDoc(
+        doc(db, "communities", comm.id),
+        {
+          ...comm,
+          createdBy: "system",
+          createdAt: serverTimestamp(),
+          isOfficial: true,
+        },
+        { merge: true } // prevents overwriting
+      );
     }
 
     alert("Seeding done!");
