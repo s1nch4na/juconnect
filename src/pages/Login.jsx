@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import axios from "axios";
+
 import { useNavigate } from 'react-router-dom';
 import { auth } from '../firebase';
 import {
@@ -20,23 +22,34 @@ const Login = () => {
   };
 
   const handleEmailPasswordLogin = async (e) => {
-    e.preventDefault();
-    setError('');
+  e.preventDefault();
+  setError("");
 
-    const email = form.email.toLowerCase();
-    if (!email.endsWith(allowedDomain)) {
-      setError('Only @jainuniversity.ac.in emails are allowed.');
-      return;
-    }
+  const email = form.email.toLowerCase();
 
-    try {
-      await signInWithEmailAndPassword(auth, email, form.password);
-      navigate('/feed');
-    } catch (err) {
-      console.error(err);
-      setError(err.message);
-    }
-  };
+  //if (!email.endsWith(allowedDomain)) {
+  //setError("Only @jainuniversity.ac.in emails are allowed.");
+  //return;
+  //}
+
+  try {
+    const response = await axios.post(
+      "http://localhost:5000/login",
+      {
+        email,
+        password: form.password,
+      }
+    );
+
+    localStorage.setItem("token", response.data.token);
+
+    navigate("/feed");
+
+  } catch (err) {
+    console.error(err);
+    setError("Invalid email or password");
+  }
+};
 
   const handleGoogleSignIn = async () => {
     const provider = new GoogleAuthProvider();

@@ -109,32 +109,35 @@ app.post('/posts', async function(req, res) {
 
 });
 
-app.post('/register', async function(req, res){
+app.post('/register', async function(req, res) {
 
-    try{
+    try {
 
-        const username = req.body.username;
-        const email = req.body.email;
-        const password = req.body.password;
+        const { username, email, password } = req.body;
+
+        const existingUser = await pool.query(
+            'SELECT * FROM users WHERE username = $1 OR email = $2',
+            [username, email]
+        );
+
+        if (existingUser.rows.length > 0) {
+            return res.status(400).json({
+                message: 'Username or email already exists'
+            });
+        }
 
         const hashedPassword = await bcrypt.hash(password, 10);
 
         const result = await pool.query(
-
-            'INSERT INTO users(username, email, password) VALUES($1, $2, $3) RETURNING id, username, email',
-
+            'INSERT INTO users (username, email, password) VALUES ($1, $2, $3) RETURNING id, username, email',
             [username, email, hashedPassword]
-
         );
 
         res.status(201).json(result.rows[0]);
 
-    }
-
-    catch(err){
+    } catch (err) {
 
         console.log(err);
-
         res.status(500).send('Server Error');
 
     }

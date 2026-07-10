@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { createUserWithEmailAndPassword } from 'firebase/auth';
-import { doc, setDoc } from 'firebase/firestore';
-import { auth, db } from '../firebase';
+import axios from "axios";
 
 const Signup = () => {
   const [form, setForm] = useState({
@@ -18,33 +16,42 @@ const Signup = () => {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    setError('');
+  e.preventDefault();
+  setError("");
 
-    // Enforce jainuniversity.ac.in domain check (case-insensitive)
-    const email = form.email.toLowerCase();
-    if (!email.endsWith('@jainuniversity.ac.in')) {
-      setError('Only @jainuniversity.ac.in emails are allowed for signup.');
-      return;
+  const email = form.email.toLowerCase();
+
+  // Uncomment this later if you want to enforce university emails
+  /*
+  if (!email.endsWith("@jainuniversity.ac.in")) {
+    setError("Only @jainuniversity.ac.in emails are allowed.");
+    return;
+  }
+  */
+
+  try {
+    await axios.post("http://localhost:5000/register", {
+      username: form.username,
+      email: email,
+      password: form.password,
+    });
+
+    alert("Signup successful!");
+
+    navigate("/login");
+
+  } catch (err) {
+
+    console.error(err);
+
+    if (err.response?.data?.message) {
+      setError(err.response.data.message);
+    } else {
+      setError("Signup failed");
     }
 
-    try {
-      const userCredential = await createUserWithEmailAndPassword(auth, email, form.password);
-      const user = userCredential.user;
-
-      await setDoc(doc(db, 'users', user.uid), {
-        username: form.username,
-        email: email,
-        createdAt: new Date(),
-      });
-
-      alert('Signup successful!');
-      navigate('/feed');
-    } catch (err) {
-      console.error(err);
-      setError(err.message);
-    }
-  };
+  }
+};
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-black text-white px-4">
