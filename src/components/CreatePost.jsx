@@ -1,60 +1,87 @@
 import { useState } from "react";
-import { db } from "../firebase"; 
-import { collection, addDoc, serverTimestamp } from "firebase/firestore";
+import axios from "axios";
 
-export default function CreatePost({ onClose, communityId, currentUserId }) {
+export default function CreatePost({
+  onClose,
+  communityId,
+  currentUserId,
+  onPostCreated,
+}) {
   const [title, setTitle] = useState("");
-  const [body, setBody] = useState("");
+  const [content, setContent] = useState("");
 
   const handlePublish = async () => {
-    if (!title || !body) return;
+    if (!title.trim() || !content.trim()) {
+      alert("Please fill all fields");
+      return;
+    }
 
     try {
-      await addDoc(collection(db, "posts"), {
-        title,
-        body,
-        communityId,
-        createdAt: serverTimestamp(),
-        createdBy: currentUserId,
-        upvotes: 0,
-        downvotes: 0,
-        comments: []
-      });
+      const token = localStorage.getItem("token");
+
+      await axios.post(
+        "http://localhost:5000/posts",
+        {
+          title,
+          content,
+          author: "kemaru", // temporary
+          communityId,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      alert("Post created!");
+
+      if (onPostCreated) {
+        await onPostCreated();
+      }
+
       onClose();
-    } catch (error) {
-      console.error("Error creating post:", error);
+
+    } catch (err) {
+      console.error(err);
+      alert("Failed to create post.");
     }
   };
 
   return (
-    <div className="fixed inset-0 backdrop-blur-sm flex justify-center items-center z-50">
-      <div className="bg-white w-full max-w-md p-6 rounded shadow-lg relative">
-        <h2 className="text-xl font-bold mb-4">Create Post</h2>
+    <div className="fixed inset-0 bg-black/60 flex justify-center items-center z-50">
+      <div className="bg-white w-full max-w-xl rounded-xl p-6">
+        <h2 className="text-2xl font-bold mb-5">Create Post</h2>
+
         <input
           type="text"
           placeholder="Title"
+          className="w-full border rounded p-3 mb-4"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
-          className="w-full mb-2 p-2 border rounded"
         />
+
         <textarea
-          placeholder="Body"
-          value={body}
-          onChange={(e) => setBody(e.target.value)}
-          className="w-full mb-2 p-2 border rounded"
+          placeholder="What's on your mind?"
+          rows={8}
+          className="w-full border rounded p-3 mb-4"
+          value={content}
+          onChange={(e) => setContent(e.target.value)}
         />
-        <div className="flex justify-end gap-2 mt-4">
+
+        <div className="flex justify-end gap-3">
           <button
             onClick={onClose}
-            className="bg-red-500 text-white px-4 py-2 rounded"
+            className="px-5 py-2 border rounded"
           >
             Cancel
           </button>
+
           <button
             onClick={handlePublish}
-            className="bg-blue-600 text-white px-4 py-2 rounded"
+            className="px-5 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
           >
-            Publish
+            Post
           </button>
         </div>
       </div>

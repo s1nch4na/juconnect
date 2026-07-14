@@ -9,52 +9,54 @@ import CreatePost from "../components/CreatePost";
 
 const CommunityPage = ({ currentUserId }) => {
   const { communityId } = useParams();
+
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [communityInfo, setCommunityInfo] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  useEffect(() => {
-    const fetchPostsAndCommunity = async () => {
-      try {
-        // Fetch posts from Express + Neon
-        const response = await fetch(
-          `http://localhost:5000/communities/${communityId}/posts`
-        );
+  const fetchPostsAndCommunity = async () => {
+    try {
+      setLoading(true);
 
-        const fetchedPosts = await response.json();
+      const response = await fetch(
+        `http://localhost:5000/communities/${communityId}/posts`
+      );
 
-        console.log("Community:", communityId);
-        console.log("Posts:", fetchedPosts);
+      const fetchedPosts = await response.json();
 
-        setPosts(fetchedPosts);
+      setPosts(fetchedPosts);
 
-        // Fetch community info from Firebase (for now)
-        const communityRef = doc(db, "communities", communityId);
-        const communitySnap = await getDoc(communityRef);
+      const communityRef = doc(db, "communities", communityId);
+      const communitySnap = await getDoc(communityRef);
 
-        if (communitySnap.exists()) {
-          setCommunityInfo(communitySnap.data());
-        }
-      } catch (err) {
-        console.error("Error fetching community data:", err);
-      } finally {
-        setLoading(false);
+      if (communitySnap.exists()) {
+        setCommunityInfo(communitySnap.data());
       }
-    };
+    } catch (err) {
+      console.error("Error fetching community data:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  useEffect(() => {
     fetchPostsAndCommunity();
   }, [communityId]);
 
   return (
     <div className="grid grid-cols-12 gap-4 max-w-screen-xl mx-auto px-4 py-6">
+
       <aside className="hidden lg:block col-span-2">
         <CommunityList />
       </aside>
 
       <main className="col-span-12 lg:col-span-7">
+
         <div className="flex justify-between items-center mb-4">
-          <h1 className="text-3xl font-extrabold">r/{communityId}</h1>
+          <h1 className="text-3xl font-extrabold">
+            r/{communityId}
+          </h1>
 
           <button
             className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
@@ -79,8 +81,10 @@ const CommunityPage = ({ currentUserId }) => {
             onClose={() => setIsModalOpen(false)}
             communityId={communityId}
             currentUserId={currentUserId}
+            onPostCreated={fetchPostsAndCommunity}
           />
         )}
+
       </main>
 
       <aside className="hidden lg:block col-span-3">
@@ -96,6 +100,7 @@ const CommunityPage = ({ currentUserId }) => {
           />
         )}
       </aside>
+
     </div>
   );
 };
