@@ -9,8 +9,8 @@ import Feed from './pages/Feed';
 import SeedCommunities from './SeedCommunities';
 import Navbar from './components/Navbar'; 
 import CommunityPage from './pages/CommunityPage';
-import SeedPosts from './pages/SeedPosts';
 import PostDetail from './pages/PostDetail';
+import ProfilePage from "./pages/ProfilePage";
 
 function AppWrapper() {
   const location = useLocation();
@@ -30,8 +30,9 @@ function AppWrapper() {
           path="/c/:communityId" 
           element={<CommunityPage currentUserId={currentUserId} />} 
         />
-        <Route path="/seed-posts" element={<SeedPosts />} />
+
         <Route path="/post/:postId" element={<PostDetail />} />
+        <Route path="/u/:username" element={<ProfilePage />} />
       </Routes>
     </>
   );

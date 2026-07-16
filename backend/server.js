@@ -140,6 +140,47 @@ app.post('/posts', async function(req, res) {
 
 });
 
+app.get("/posts/:postId/comments", async (req, res) => {
+  try {
+    const { postId } = req.params;
+
+    const result = await pool.query(
+      `SELECT *
+       FROM comments
+       WHERE post_id = $1
+       ORDER BY created_at ASC`,
+      [postId]
+    );
+
+    res.json(result.rows);
+
+  } catch (err) {
+    console.log(err);
+    res.status(500).send("Server Error");
+  }
+});
+
+app.post("/posts/:postId/comments", async (req, res) => {
+  try {
+    const { postId } = req.params;
+    const { author, content } = req.body;
+
+    const result = await pool.query(
+      `INSERT INTO comments
+      (post_id, author, content)
+      VALUES ($1, $2, $3)
+      RETURNING *`,
+      [postId, author, content]
+    );
+
+    res.status(201).json(result.rows[0]);
+
+  } catch (err) {
+    console.log(err);
+    res.status(500).send("Server Error");
+  }
+});
+
 app.post('/register', async function(req, res) {
 
     try {
@@ -262,6 +303,49 @@ app.post('/login', async function(req,res){
     }
 
 
+});
+
+app.get("/users/:username", async (req, res) => {
+  try {
+    const { username } = req.params;
+
+    const user = await pool.query(
+      `SELECT id, username, email
+       FROM users
+       WHERE username=$1`,
+      [username]
+    );
+
+    if (user.rows.length === 0) {
+      return res.status(404).send("User not found");
+    }
+
+    const posts = await pool.query(
+      `SELECT *
+       FROM posts
+       WHERE author=$1
+       ORDER BY created_at DESC`,
+      [username]
+    );
+
+    const comments = await pool.query(
+      `SELECT *
+       FROM comments
+       WHERE author=$1
+       ORDER BY created_at DESC`,
+      [username]
+    );
+
+    res.json({
+      user: user.rows[0],
+      posts: posts.rows,
+      comments: comments.rows,
+    });
+
+  } catch (err) {
+    console.log(err);
+    res.status(500).send("Server Error");
+  }
 });
 
 app.listen(5000, function() {

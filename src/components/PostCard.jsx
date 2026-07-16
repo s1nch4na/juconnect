@@ -1,13 +1,18 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { FaArrowUp, FaArrowDown, FaCommentDots, FaShare } from "react-icons/fa";
+import {
+  FaArrowUp,
+  FaArrowDown,
+  FaCommentDots,
+  FaShare,
+} from "react-icons/fa";
 import { handleVote } from "../utils/voting";
 
 const PostCard = ({ post }) => {
   const [upvotes, setUpvotes] = useState(post.upvotes || 0);
   const [downvotes, setDownvotes] = useState(post.downvotes || 0);
 
-  const userId = "anonymous"; // Replace later with logged in user
+  const userId = "anonymous"; // Replace later with logged-in user
 
   const onUpvote = async () => {
     await handleVote({
@@ -45,28 +50,36 @@ const PostCard = ({ post }) => {
 
       {/* Community + Author */}
       <div className="flex items-center gap-2 text-sm text-gray-600 mb-2">
+
         <Link
-          to={`/c/${post.communityId}`}
+          to={`/c/${post.community_id}`}
           className="font-semibold text-blue-600 hover:underline"
         >
-          r/{post.communityId}
+          r/{post.community_id}
         </Link>
 
         <span>•</span>
 
         <span className="text-gray-500">
-          Posted by u/{post.createdBy}
+          Posted by{" "}
+          <Link
+            to={`/u/${post.author}`}
+            className="font-semibold hover:underline text-gray-700"
+          >
+            u/{post.author}
+          </Link>
         </span>
+
       </div>
 
-      {/* Clickable Content */}
+      {/* Clickable Post */}
       <Link to={`/post/${post.id}`} className="block">
 
         <h2 className="text-xl font-bold hover:text-blue-600 transition">
           {post.title}
         </h2>
 
-        <p className="mt-2 text-gray-800">
+        <p className="mt-2 text-gray-800 whitespace-pre-wrap">
           {post.content}
         </p>
 

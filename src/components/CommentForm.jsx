@@ -5,26 +5,31 @@ const CommentForm = ({ onSubmit, placeholder }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
     if (!text.trim()) return;
+
     onSubmit(text.trim());
     setText("");
   };
 
   return (
-    <form onSubmit={handleSubmit} className="mb-4 flex gap-2">
-      <input
-        type="text"
+    <form
+      onSubmit={handleSubmit}
+      className="mb-6 flex flex-col gap-3"
+    >
+      <textarea
+        rows={4}
         placeholder={placeholder}
-        className="flex-1 border px-3 py-2 text-sm rounded"
-        
         value={text}
         onChange={(e) => setText(e.target.value)}
+        className="w-full border border-gray-300 rounded-lg p-3 resize-none focus:outline-none focus:ring-2 focus:ring-orange-500"
       />
+
       <button
         type="submit"
-        className="bg-green-500 text-white px-4 rounded text-sm"
+        className="self-end bg-orange-500 hover:bg-orange-600 text-white px-5 py-2 rounded-full font-medium transition"
       >
-        Post
+        Comment
       </button>
     </form>
   );

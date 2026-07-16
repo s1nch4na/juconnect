@@ -2,9 +2,6 @@ import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
 
-import { fetchComments, postComment } from "../utils/comments";
-import { auth } from "../firebase";
-
 import CommentForm from "../components/CommentForm";
 import CommentList from "../components/CommentList";
 import CommunityList from "../components/CommunityList";
@@ -16,6 +13,18 @@ const PostDetail = () => {
   const [loading, setLoading] = useState(true);
   const [comments, setComments] = useState([]);
   const [replyTo, setReplyTo] = useState(null);
+
+  const fetchComments = async () => {
+    try {
+      const response = await axios.get(
+        `http://localhost:5000/posts/${postId}/comments`
+      );
+
+      setComments(response.data);
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   useEffect(() => {
     const fetchPost = async () => {
@@ -32,31 +41,27 @@ const PostDetail = () => {
       }
     };
 
-    const loadComments = async () => {
-      const fetched = await fetchComments(postId);
-      setComments(fetched);
-    };
-
     fetchPost();
-    loadComments();
+    fetchComments();
   }, [postId]);
 
   const handleNewComment = async (text) => {
-    const userId = auth.currentUser?.uid;
+    try {
+      await axios.post(
+        `http://localhost:5000/posts/${postId}/comments`,
+        {
+          author: "kemaru", // temporary
+          content: text,
+        }
+      );
 
-    if (!userId) return;
+      setReplyTo(null);
 
-    await postComment({
-      postId,
-      text,
-      userId,
-      parentId: replyTo,
-    });
+      fetchComments();
 
-    setReplyTo(null);
-
-    const updated = await fetchComments(postId);
-    setComments(updated);
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   if (loading) return <p className="p-4">Loading...</p>;
@@ -85,6 +90,7 @@ const PostDetail = () => {
         </p>
 
         <div className="mt-8 border-t pt-6">
+
           <h2 className="text-xl font-semibold mb-4">
             Comments
           </h2>
@@ -102,17 +108,25 @@ const PostDetail = () => {
             comments={comments}
             onReply={(id) => setReplyTo(id)}
           />
+
         </div>
 
       </main>
 
       <aside className="hidden lg:block w-[300px]">
+
         <div className="bg-white rounded-md shadow p-4">
-          <h3 className="font-semibold mb-2">About Community</h3>
+
+          <h3 className="font-semibold mb-2">
+            About Community
+          </h3>
+
           <p className="text-sm text-gray-500">
             Community information will go here.
           </p>
+
         </div>
+
       </aside>
 
     </div>

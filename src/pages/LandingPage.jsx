@@ -14,12 +14,45 @@ const LandingPage = () => {
   const totalFrames = Math.floor(duration / interval);
   const CHARS = '!<>-_\\/[]{}—=+*^?#________';
 
+  const bubbles = [
+  { text: "💬 Anyone has DBMS notes?", top: "8%", left: "6%" },
+  { text: "💬 Looking for hackathon teammates!", top: "18%", right: "8%" },
+  { text: "💬 Free pizza near Block C 🍕", top: "28%", left: "3%" },
+  { text: "💬 Is today's OS class cancelled?", top: "38%", right: "6%" },
+  { text: "💬 Who's joining ACM?", top: "48%", left: "10%" },
+  { text: "💬 Need React project partner.", top: "58%", right: "12%" },
+  { text: "💬 Lost my ID card 😭", top: "72%", left: "7%" },
+  { text: "💬 Anyone from Section B?", top: "84%", right: "10%" },
+  { text: "💬 Placement tips please 🥲", top: "12%", left: "70%" },
+  { text: "💬 Canteen is packed today.", top: "82%", left: "60%" },
+  { text: "💬 Leetcode contest tonight!", top: "65%", right: "30%" },
+  { text: "💬 Midsem syllabus?", top: "22%", left: "55%" },
+];
+
   
   useEffect(() => {
-    const link = document.createElement('link');
-    link.href = 'https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap';
-    link.rel = 'stylesheet';
-    document.head.appendChild(link);
+  const link = document.createElement("link");
+  link.href =
+    "https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap";
+  link.rel = "stylesheet";
+  document.head.appendChild(link);
+
+  const style = document.createElement("style");
+
+  style.innerHTML = `
+    @keyframes float {
+      0% { transform: translateY(0px); }
+      50% { transform: translateY(-10px); }
+      100% { transform: translateY(0px); }
+    }
+  `;
+
+  document.head.appendChild(style);
+
+  return () => {
+    document.head.removeChild(link);
+    document.head.removeChild(style);
+  };
   }, []);
 
 
@@ -69,6 +102,33 @@ const LandingPage = () => {
           pointerEvents: 'none',
         }}
       />
+
+      {bubbles.map((bubble, index) => (
+  <div
+    key={index}
+    style={{
+      position: "absolute",
+      top: bubble.top,
+      left: bubble.left,
+      right: bubble.right,
+      background: "rgba(40,40,40,.9)",
+      color: "#fff",
+      padding: "10px 18px",
+      borderRadius: "999px",
+      fontSize: "13px",
+      fontFamily: "Arial",
+      opacity: 0.8,
+      animation: `float ${5 + (index % 3)}s ease-in-out infinite`,
+      animationDelay: `${index * 0.4}s`,
+      border: "1px solid rgba(255,255,255,.08)",
+      boxShadow: "0 8px 20px rgba(0,0,0,.3)",
+      pointerEvents: "none",
+      whiteSpace: "nowrap",
+    }}
+    >
+    {bubble.text}
+    </div>
+    ))}
 
       <div style={{
         display: 'flex',
