@@ -1,9 +1,14 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+
+import { useNavigate } from "react-router-dom";
+import Login from "./Login";
+import Signup from "./Signup";
+
 
 const LandingPage = () => {
   const canvasRef = useRef(null);
   const [decodedText, setDecodedText] = useState('');
+  const [modal, setModal] = useState(null);
   const frame = useRef(0);
   const navigate = useNavigate();
 
@@ -149,7 +154,7 @@ const LandingPage = () => {
 
         <div style={{ display: 'flex', gap: '20px' }}>
           <button
-            onClick={() => navigate('/login')}
+            onClick={() => setModal("login")}
             style={{
               background: 'transparent',
               border: '2px solid white',
@@ -167,7 +172,7 @@ const LandingPage = () => {
           </button>
 
           <button
-            onClick={() => navigate('/signup')}
+            onClick={() => setModal("signup")}
             style={{
               background: 'white',
               border: '2px solid white',
@@ -189,8 +194,71 @@ const LandingPage = () => {
           >
             Signup
           </button>
+
+          <button
+          onClick={() => navigate("/feed")}
+          style={{
+          background: "transparent",
+          border: "2px solid #555",
+          color: "#999",
+          fontFamily: "'Press Start 2P', monospace",
+          fontSize: "0.7rem",
+          padding: "10px 20px",
+          cursor: "pointer",
+          transition: ".3s"
+            }}
+          >         
+          Explore
+          </button>
         </div>
       </div>
+      {modal === "login" && (
+  <div
+    onClick={() => setModal(null)}
+    style={{
+      position: "fixed",
+      inset: 0,
+      background: "rgba(0,0,0,.6)",
+      backdropFilter: "blur(5px)",
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
+      zIndex: 999
+    }}
+  >
+    <div onClick={(e) => e.stopPropagation()}>
+      <Login
+        isModal
+        onClose={() => setModal(null)}
+        switchToSignup={() => setModal("signup")}
+      />
+    </div>
+  </div>
+)}
+
+{modal === "signup" && (
+  <div
+    onClick={() => setModal(null)}
+    style={{
+      position: "fixed",
+      inset: 0,
+      background: "rgba(0,0,0,.6)",
+      backdropFilter: "blur(5px)",
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
+      zIndex: 999
+    }}
+  >
+    <div onClick={(e) => e.stopPropagation()}>
+      <Signup
+        isModal
+        onClose={() => setModal(null)}
+        switchToLogin={() => setModal("login")}
+      />
+    </div>
+  </div>
+)}
     </div>
   );
 };
